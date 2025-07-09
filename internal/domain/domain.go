@@ -16,5 +16,5 @@ type Task struct {
 	Name        string
 	Description string
 	Status      Status
-	CreatedBy   time.Time
+	CreatedAt   time.Time
 }
