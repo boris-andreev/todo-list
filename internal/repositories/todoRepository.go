@@ -26,6 +26,14 @@ func (r *TodoRepository) ChangeStatus(id int, status domain.Status) error {
 	return errors.New("Not implemented")
 }
 
+func (r *TodoRepository) GetTaskById(id int) (*domain.Task, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (r *TodoRepository) GetTasks() ([]domain.Task, error) {
+	return nil, errors.New("Not implemented")
+}
+
 func NewTodoRepository(dbConnectionString string) (*TodoRepository, error) {
 	return &TodoRepository{
 		dbConnectionString: dbConnectionString,

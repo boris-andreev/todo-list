@@ -41,3 +41,11 @@ func (r *TodoService) DeleteTask(id int) error {
 func (r *TodoService) ChangeStatus(id int, status domain.Status) error {
 	return r.todoRepository.ChangeStatus(id, status)
 }
+
+func (r *TodoService) GetTaskById(id int) (*domain.Task, error) {
+	return r.todoRepository.GetTaskById(id)
+}
+
+func (r *TodoService) GetTasks() ([]domain.Task, error) {
+	return r.todoRepository.GetTasks()
+}
