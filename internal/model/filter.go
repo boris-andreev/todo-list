@@ -1,6 +1,6 @@
 package model
 
 type Filter struct {
-	Status      Status `json:"status"`
-	CreatedDate string `json:"createdDate"`
+	Status      Status `json:"status" binding:"required"`
+	CreatedDate string `json:"createdDate" binding:"required"`
 }

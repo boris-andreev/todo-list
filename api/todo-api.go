@@ -29,12 +29,14 @@ func configureRouting(router *gin.Engine, handler *TodoApiHandler) {
 
 	apiGroup := router.Group("/api")
 
-	homeworkGroup := apiGroup.Group("/task")
-	homeworkGroup.POST("/", handler.AddTask())
-	//homeworkGroup.DELETE("/:id", handler.DeleteHomeworkItem())
-	//homeworkGroup.PUT("/:id", handler.UpdateHomeworkItem())
-	//homeworkGroup.GET("/:id", handler.GetHomeworkItem())
-	//homeworkGroup.GET("/", handler.GetHomeworkItems())
+	taskGroup := apiGroup.Group("/task")
+	taskGroup.POST("/", handler.AddTask())
+	taskGroup.PUT("/", handler.EditTask())
+	taskGroup.DELETE("/:id", handler.DeleteTask())
+	taskGroup.GET("/:id", handler.GetTaskById())
+	taskGroup.GET("/", handler.GetAllTasks())
+	taskGroup.GET("/filter", handler.GetTasks())
+	taskGroup.POST("/status", handler.ChangeStatus())
 }
 
 func NewTodoApi(ctx context.Context, wg *sync.WaitGroup, todoService *service.TodoService) *TodoApi {

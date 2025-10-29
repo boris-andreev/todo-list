@@ -20,14 +20,154 @@ func NewTodoApiHandler(todoApiService todoApiService) *TodoApiHandler {
 
 func (h *TodoApiHandler) AddTask() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		task := &model.Task{}
 		h.createOrUpdate(c, task, h.todoApiService.AddTask)
 	}
 }
 
+func (h *TodoApiHandler) EditTask() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		task := &model.Task{}
+		h.createOrUpdate(c, task, h.todoApiService.EditTask)
+	}
+}
+
+func (h *TodoApiHandler) DeleteTask() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, ok := getIdFromRoute(c)
+		if !ok {
+			return
+		}
+
+		userId, ok := getUserIdFromContext(c)
+		if !ok {
+			return
+		}
+
+		err := h.todoApiService.DeleteTask(id, userId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+	}
+}
+
+func (h *TodoApiHandler) GetTaskById() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, ok := getIdFromRoute(c)
+		if !ok {
+			return
+		}
+
+		userId, ok := getUserIdFromContext(c)
+		if !ok {
+			return
+		}
+
+		res, err := h.todoApiService.GetTaskById(id, userId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func (h *TodoApiHandler) GetAllTasks() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userId, ok := getUserIdFromContext(c)
+		if !ok {
+			return
+		}
+
+		res, err := h.todoApiService.GetAllTasks(userId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func (h *TodoApiHandler) GetTasks() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userId, ok := getUserIdFromContext(c)
+		if !ok {
+			return
+		}
+
+		filter := &model.Filter{}
+
+		err := c.ShouldBindJSON(filter)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+
+		res, err := h.todoApiService.GetTasks(filter, userId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func (h *TodoApiHandler) ChangeStatus() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userId, ok := getUserIdFromContext(c)
+		if !ok {
+			return
+		}
+
+		req := &statusChangeRequest{}
+
+		err := c.ShouldBindJSON(req)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+
+		err = h.todoApiService.ChangeStatus(req.Id, req.Status, userId)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorMessage{
+				Message: err.Error(),
+			})
+
+			return
+		}
+	}
+}
+
 func (h *TodoApiHandler) createOrUpdate(c *gin.Context, task *model.Task, mutator func(task *model.Task, userId int32) error) {
-	userId, ok := parseUserId(c)
+	userId, ok := getUserIdFromContext(c)
 	if !ok {
 		return
 	}
@@ -50,7 +190,7 @@ func (h *TodoApiHandler) createOrUpdate(c *gin.Context, task *model.Task, mutato
 	}
 }
 
-func parseUserId(c *gin.Context) (int32, bool) {
+func getUserIdFromContext(c *gin.Context) (int32, bool) {
 	s, ok := c.Get(service.UserIdKey)
 	if !ok {
 		c.Status(http.StatusUnauthorized)
@@ -64,4 +204,18 @@ func parseUserId(c *gin.Context) (int32, bool) {
 	}
 
 	return int32(userId), true
+}
+
+func getIdFromRoute(c *gin.Context) (string, bool) {
+	id := c.Param("id")
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, ErrorMessage{
+			Message: "Task id is a must",
+		})
+
+		return "", false
+	}
+
+	return id, true
 }

@@ -113,7 +113,7 @@ func (r *TodoRepository) GetTaskById(id string, userId int32) (*model.Task, erro
 	return res, nil
 }
 
-func (r *TodoRepository) GetTasks(filter model.Filter, userId int32) ([]*model.Task, error) {
+func (r *TodoRepository) GetTasks(filter *model.Filter, userId int32) ([]*model.Task, error) {
 	query := `
 	select id, name, description, status
 	from tasks
@@ -136,7 +136,7 @@ func (r *TodoRepository) GetAllTasks(userId int32) ([]*model.Task, error) {
 }
 
 func (r *TodoRepository) getTasks(query string, args ...any) ([]*model.Task, error) {
-	var res []*model.Task
+	res := []*model.Task{}
 
 	rows, err := r.db.QueryContext(r.ctx, query, args...)
 	if err != nil {

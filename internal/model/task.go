@@ -11,8 +11,8 @@ const (
 )
 
 type Task struct {
-	Id          string
-	Name        string
-	Description string
-	Status      Status
+	Id          string `json:"id"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	Status      Status `json:"status" binding:"required"`
 }

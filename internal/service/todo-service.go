@@ -39,7 +39,7 @@ func (s *TodoService) GetTaskById(id string, userId int32) (*model.Task, error) 
 	return s.todoRepository.GetTaskById(id, userId)
 }
 
-func (s *TodoService) GetTasks(filter model.Filter, userId int32) ([]*model.Task, error) {
+func (s *TodoService) GetTasks(filter *model.Filter, userId int32) ([]*model.Task, error) {
 	return s.todoRepository.GetTasks(filter, userId)
 }
 
