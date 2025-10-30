@@ -2,9 +2,7 @@ package api
 
 import (
 	"net/http"
-	_ "net/http"
 	"strings"
-	_ "strings"
 	"todo-list/internal/service"
 	"todo-list/internal/utils/jwt"
 

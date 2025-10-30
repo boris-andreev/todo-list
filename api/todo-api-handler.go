@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"time"
 	"todo-list/internal/model"
 	"todo-list/internal/service"
 	"todo-list/internal/utils/jwt"
@@ -147,6 +148,15 @@ func (h *TodoApiHandler) GetTasks() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusBadRequest, ErrorMessage{
 				Message: err.Error(),
+			})
+
+			return
+		}
+
+		_, err = time.Parse(time.DateOnly, filter.CreatedDate)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Message: "invalid createdDate must by in YYYY-MM-DD format",
 			})
 
 			return

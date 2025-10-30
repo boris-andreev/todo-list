@@ -70,22 +70,17 @@ func (a *TodoApi) listenForFinish() {
 	go func() {
 		defer a.wg.Done()
 
-		for {
-			select {
-			case <-a.ctx.Done():
-				log.Println("Shutting down server...")
+		<-a.ctx.Done()
+		log.Println("Shutting down server...")
 
-				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-				defer cancel()
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 
-				if err := a.server.Shutdown(ctx); err != nil {
-					log.Printf("Server forced to shutdown: %v", err)
-				}
-
-				log.Println("Server exited")
-				return
-			}
+		if err := a.server.Shutdown(ctx); err != nil {
+			log.Printf("Server forced to shutdown: %v", err)
 		}
+
+		log.Println("Server exited")
 	}()
 
 }

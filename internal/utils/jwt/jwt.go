@@ -14,14 +14,10 @@ type Claims struct {
 }
 
 var (
-	secretKey               []byte
+	secretKey               = []byte(uuid.NewString())
 	errInvalidSigningMethod = errors.New("invalid signing method")
 	errInvalidToken         = errors.New("invalid token")
 )
-
-func init() {
-	secretKey = []byte(uuid.NewString())
-}
 
 func GenerateToken(userid int32) (string, error) {
 	expirationTime := time.Now().Add(1 * time.Hour)

@@ -14,8 +14,7 @@ import (
 )
 
 func main() {
-
-	// uncomment in debug mode
+	// do not forget to uncomment in debug mode
 	// godotenv.Load("../.env")
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
