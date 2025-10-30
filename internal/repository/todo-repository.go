@@ -36,7 +36,7 @@ func (r *TodoRepository) AddTask(task *model.Task, userId int32) error {
 	}
 
 	if rowsAffected == 0 {
-		return fmt.Errorf("Task not added")
+		return fmt.Errorf("task not added")
 	}
 
 	return nil
@@ -90,7 +90,7 @@ func (r *TodoRepository) updateTask(query string, args ...any) error {
 	}
 
 	if rowsAffected == 0 {
-		return fmt.Errorf("Task with id %s for current user not found", args[0])
+		return fmt.Errorf("task with id %s for current user not found", args[0])
 	}
 
 	return nil
@@ -142,7 +142,12 @@ func (r *TodoRepository) getTasks(query string, args ...any) ([]*model.Task, err
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("Error closing rows: %v", err)
+		}
+	}()
 
 	for rows.Next() {
 		item := &model.Task{}
