@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"todo-list/internal/model"
 	"todo-list/internal/service"
+	"todo-list/internal/utils/jwt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -99,6 +100,36 @@ func (h *TodoApiHandler) GetAllTasks() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, res)
+	}
+}
+
+func (h *TodoApiHandler) Login() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		req := &loginRequest{}
+		if err := c.ShouldBindJSON(req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request"})
+			return
+		}
+
+		userId, err := h.todoApiService.Login(req.Username, req.Password)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorMessage{
+				Message: "Invalid username or password",
+			})
+
+			return
+		}
+
+		token, err := jwt.GenerateToken(userId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not generate token"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Login successful",
+			"token":   token,
+		})
 	}
 }
 

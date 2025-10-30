@@ -8,7 +8,7 @@ services:
     networks:
       - todo
     ports:
-      - 8080:8081
+      - 8080:8080
       - 4000:4000
 
   db:
@@ -19,6 +19,7 @@ services:
       - "5432:5432"
     networks:
       - todo
+
 
   pgadmin:
     image: dpage/pgadmin4:latest

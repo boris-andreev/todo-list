@@ -22,8 +22,7 @@ type TodoApi struct {
 
 func configureRouting(router *gin.Engine, handler *TodoApiHandler) {
 
-	//router.GET("/swagger/*any", ginSwagger.WrapHandler(ginSwaggerFiles.Handler))
-	//router.POST("/login", handler.Login())
+	router.POST("/login", handler.Login())
 
 	router.Use(HandleAuth())
 
@@ -47,7 +46,7 @@ func NewTodoApi(ctx context.Context, wg *sync.WaitGroup, todoService *service.To
 	return &TodoApi{
 		router: router,
 		server: &http.Server{
-			Addr:    ":8081",
+			Addr:    ":8080",
 			Handler: router,
 		},
 		ctx: ctx,

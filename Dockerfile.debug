@@ -7,6 +7,7 @@ COPY . .
 
 RUN go get -d -v ./...
 
+
 WORKDIR /app
 RUN CGO_ENABLED=0 go build -o ./bin/todo-api ./cmd/.
 RUN CGO_ENABLED=0 go install -ldflags "-s -w -extldflags '-static'" github.com/go-delve/delve/cmd/dlv@latest
