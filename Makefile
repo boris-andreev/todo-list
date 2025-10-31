@@ -2,7 +2,7 @@ MOCKS_DIR := ./internal/mocks
 INTERFACES := \
     ./internal/model/repository.go \
 
-.PHONY: mocks clean
+.PHONY: mocks clean lint
 
 mocks: $(MOCKS_DIR)
 	@echo "Generating mocks..."
@@ -19,3 +19,6 @@ clean:
 	@echo "Cleaning up mocks..."
 	@rm -rf $(MOCKS_DIR)
 	@echo "Mocks directory removed."
+
+lint:
+	golangci-lint run
