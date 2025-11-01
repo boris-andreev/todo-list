@@ -21,4 +21,6 @@ clean:
 	@echo "Mocks directory removed."
 
 lint:
+	@echo "Running golangci-lint..."
 	golangci-lint run
+	@echo "golangci-lint finished."
