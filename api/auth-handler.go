@@ -26,7 +26,7 @@ func HandleAuth() gin.HandlerFunc {
 
 		token, err := jwt.ParseToken(strings.ReplaceAll(tokenString, "Bearer ", ""))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error(), "AAAA": "AAAA"})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			c.Abort()
 
 			return

@@ -10,6 +10,7 @@ import (
 
 	"todo-list/internal/model"
 
+	"github.com/google/uuid"
 	_ "github.com/jackc/pgx/stdlib"
 )
 
@@ -104,12 +105,12 @@ func (r *TodoRepository) GetTaskById(id string, userId int32) (*model.Task, erro
 	FROM tasks 
 	WHERE id = $1 and user_Id = $2`
 
-	/*taskId, err := uuid.Parse(id)
+	taskId, err := uuid.Parse(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid task ID format: %w", err)
-	}*/
+	}
 
-	err := r.db.QueryRowContext(r.ctx, query, id, userId).Scan(&res.Id, &res.Name, &res.Description, &res.Status)
+	err = r.db.QueryRowContext(r.ctx, query, taskId, userId).Scan(&res.Id, &res.Name, &res.Description, &res.Status)
 
 	if err != nil && err == sql.ErrNoRows {
 		return nil, nil
