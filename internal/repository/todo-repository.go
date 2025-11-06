@@ -104,7 +104,16 @@ func (r *TodoRepository) GetTaskById(id string, userId int32) (*model.Task, erro
 	FROM tasks 
 	WHERE id = $1 and user_Id = $2`
 
+	/*taskId, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid task ID format: %w", err)
+	}*/
+
 	err := r.db.QueryRowContext(r.ctx, query, id, userId).Scan(&res.Id, &res.Name, &res.Description, &res.Status)
+
+	if err != nil && err == sql.ErrNoRows {
+		return nil, nil
+	}
 
 	if err != nil {
 		return nil, err

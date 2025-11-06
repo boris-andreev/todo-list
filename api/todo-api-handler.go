@@ -79,6 +79,10 @@ func (h *TodoApiHandler) GetTaskById() gin.HandlerFunc {
 
 			return
 		}
+		if (res == nil) {
+			c.Status(http.StatusNotFound)
+			return
+		}
 		c.JSON(http.StatusOK, res)
 	}
 }

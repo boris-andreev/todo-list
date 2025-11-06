@@ -54,16 +54,17 @@ func (s *TodoService) Login(username string, password string) (userId int32, err
 		return 0, err
 	}
 
-	if !checkPasswordHash(password, user.Password) {
+	err = checkPasswordHash(password, user.Password)
+
+	if err != nil {
 		return 0, err
 	}
 
 	return user.Id, nil
 }
 
-func checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func checkPasswordHash(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 func New(todoRepository model.Repository, ctx context.Context, wg *sync.WaitGroup) *TodoService {
 	return &TodoService{

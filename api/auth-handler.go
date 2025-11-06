@@ -16,8 +16,6 @@ func HandleAuth() gin.HandlerFunc {
 			return
 		}
 
-		c.Set(service.UserIdKey, int32(1))
-
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "No token provided"})
@@ -28,7 +26,7 @@ func HandleAuth() gin.HandlerFunc {
 
 		token, err := jwt.ParseToken(strings.ReplaceAll(tokenString, "Bearer ", ""))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": err.Error(), "AAAA": "AAAA"})
 			c.Abort()
 
 			return
